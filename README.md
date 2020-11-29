@@ -12,6 +12,19 @@ My Gallery lets users do the following:
 - Follow anther users to Follow up the latest photos.
 - Search for specific photos.
 
+|                     Login                     |                       Pages                       |
+| :-------------------------------------------: | :-----------------------------------------------: |
+| <img src="Screenshots/login.gif" width="400"> | <img src="Screenshots/pages_3.gif" width = "400"> |
+
+| Responsive Web |
+| :------------: |
+
+ <img src="Screenshots/home.gif" width = "400">
+
+|                       MyPage                        |                      Search                      |
+| :-------------------------------------------------: | :----------------------------------------------: |
+| <img src="Screenshots/mypage_12.gif" width = "400"> | <img src="Screenshots/search.gif" width = "400"> |
+
 # Features
 
 - Python
