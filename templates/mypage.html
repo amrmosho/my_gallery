@@ -1,0 +1,153 @@
+{% extends 'layout.html' %}
+{% block title %} my Page {% endblock %}
+{%block body %}
+
+<div class="haeer_bg"><img class="" src="{{login_user_data["banner"]}}" alt="image" style="width:100%"></div>
+<div class="user_data white_bg" style="position: relative;
+    z-index: 111111;">
+
+    <div class="container">
+        <div class="user_image shadow">
+            <img class="" src="{{login_user_data["image"]}}" alt="image">
+        </div>
+
+        <div class=" grid ">
+            <div class="col-2"></div>
+            <h5 class=" col-4">{{login_user_data["name"]}}<br />
+
+                <span class=' blue_color'>{{login_user_data["email"]}}</span>
+
+            </h5>
+            <div class="col-2"></div>
+            <div class="col-4 blue_color options_bar grid">
+
+                <div onclick="add_image(this)" class="  blue_color upload_image_btn col-4"> <i
+                        class="fas fa-upload"></i> Uploda image</div>
+                <div onclick="edit_mydata(this)" class=" blue_color  col-4"> <i class="fas  fa-user-edit"></i> Edit my
+                    profile</div>
+
+                <div class="blue_color col-4">
+                    <a href="/logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout</a></div>
+
+
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="album py-5 bg-light">
+    <div class="container">
+        <div class="grid">
+            {% for img in images %}
+
+            <div class="col-4">
+                <div class="card">
+                    <div class="card_img_cont">
+                        <img class="" src="{{ img["src"] }}" alt="image" style="width:100%">
+                    </div>
+                    <div class="card_body">
+                        <h4 class="card-title">{{ img["title"] }}</h4>
+
+                        <p class="card-text">{{ img["des"] }}</p>
+
+                        <div class="grid">
+                            <span class="col-3  small-info "><i style="margin: 0 5px;" class="far fa-eye"></i>
+                                {{ img["views"] }}</span>
+
+                            <span class="col-3  small-info "> <i style="margin: 0 5px;"
+                                    class="far  fa-thumbs-up"></i>{{ img["likes"]}} </span>
+
+
+                            <span class="col-6  small-info  "><i style="margin: 0 5px;"
+                                    class="fas fa-calendar-day"></i>{{ img["created"]}} </span>
+
+
+                        </div>
+
+                        <hr class="mb-4" />
+
+                        <div class="btn-group  ">
+                            <button onclick="delete_image('{{ img["id"]}}')" type="button" class="btn bg-danger btn-sm">
+                                Delete
+                            </button>
+                            <button onclick="edit_image('{{ img["id"]}}')" type="button"
+                                class="btn btn-sm btn-outline-secondary">
+                                Edit
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <nav style="margin:  20px auto;" class="Page navigation ">
+
+
+            <ul class="pagination justify-content-center">
+
+                {% if pages.perv > 0 %}
+                <li class="page-item">
+                    <a class="page-link" href="/explore/{{pages.perv}}">perv</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">perv</a>
+                </li>
+                {%endif%}
+
+
+                {% for  x in range(1, pages.count): %}
+                {% if pages.page == x %}
+                <li class="page-item active">
+                    <span class="page-link">
+                        {{x}}
+                        <span class="sr-only">(current)</span>
+                    </span>
+                </li>
+
+                {% else %}
+                <li class="page-item"><a class="page-link" href="/{{menu}}/{{x}}">{{x}}</a></li>
+                {%endif%}
+                {% endfor %}
+
+
+                {% if pages.next < pages.count %}
+                <li class="page-item">
+                    <a class="page-link" href="/{{menu}}/{{pages.next}}"> Next</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+                {%endif%}
+
+
+
+
+            </ul>
+        </nav>
+    </div>
+
+
+
+
+</div>
+{% endblock %}
+
+
+
+{% block script %}
+
+
+
+
+{% endblock %}

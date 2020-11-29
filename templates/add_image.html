@@ -1,0 +1,60 @@
+{% if  image != null %}
+
+<div class="py-5 modal-body">
+  <form method="post" action="/mypage" enctype="multipart/form-data">
+    <input type="hidden" name="status" value="edit" />
+    <input type="hidden" name="image_id" value="{{image["id"]}}" />
+    <input type="hidden" name="user_id" value="{{user["id"]}}" />
+    <img style="max-width:100%" src=".{{image["src"]}}" />
+    <div class="form-group">
+      <label>Image Title</label>
+      <input type="text" name="title" value="{{image["title"]}}" class="form-control" />
+      <small class="form-text text-muted">Add image title.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="exampleFormControlTextarea1"> Image discretion</label>
+      <textarea class="form-control" name="des" id="exampleFormControlTextarea1" rows="3">{{image["des"]}}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="exampleFormControlFile1">Image</label>
+      <input type="file" name="src" class="form-control-file" />
+    </div>
+
+    <hr class="mb-4" />
+    <button class="btn btn-primary btn-lg btn-block" type="submit">
+      Update Image
+    </button>
+  </form>
+</div>
+
+{% else %}
+<div class="py-5 modal-body">
+  <form method="post" action="/mypage" enctype="multipart/form-data">
+    <input type="hidden" name="status" value="add" />
+    <input type="hidden" name="user_id" value="{{user["id"]}}" />
+
+    <div class="form-group">
+      <label>Image Title</label>
+      <input type="text" name="title" class="form-control" />
+      <small class="form-text text-muted">Add image title.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="exampleFormControlTextarea1"> Image discretion</label>
+      <textarea class="form-control" name="des" id="exampleFormControlTextarea1" rows="3"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="exampleFormControlFile1">Image</label>
+      <input type="file" name="src" class="form-control-file" />
+    </div>
+
+    <hr class="mb-4" />
+    <button class="btn btn-primary btn-lg btn-block" type="submit">
+      Add Image
+    </button>
+  </form>
+</div>
+{% endif %}

@@ -1,0 +1,43 @@
+<div class="py-5 modal-body">
+    <form method="post" action="/edit_my_data/" enctype="multipart/form-data">
+
+        <input type="hidden" name="user_id" value="{{user["id"]}}" />
+
+        <input type="hidden" name="status" value="update" />
+        <div class="form-group">
+            <label>name </label>
+            <input type="text" name="name" value="{{user["name"]}}" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Email </label>
+            <input type="email" name="email" value="{{user["email"]}}" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Password </label>
+            <input type="password" name="password" value="{{user["password"]}}" class="form-control" />
+        </div>
+
+        <img class="" style="width:150px;" src="{{user["image"]}}" alt="image">
+
+        <div class="form-group">
+            <label for="exampleFormControlFile1">Image</label>
+            <input type="file" name="image" value="{{user["image"]}}" class="form-control-file" />
+        </div>
+
+        <img class="" style="width:150px;" src="{{user["banner"]}}" alt="image">
+
+        <div class="form-group">
+            <label for="exampleFormControlFile1">banner</label>
+            <input type="file" name="banner" value="{{user["banner"]}}" class="form-control-file" />
+        </div>
+
+
+
+        <button style="    width: 100%;" class="button red_bg" type="submit">
+            Update
+        </button>
+
+    </form>
+</div>
