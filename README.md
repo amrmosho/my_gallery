@@ -16,10 +16,9 @@ My Gallery lets users do the following:
 | :-------------------------------------------: | :-----------------------------------------------: |
 | <img src="Screenshots/login.gif" width="400"> | <img src="Screenshots/pages_3.gif" width = "400"> |
 
-| Responsive Web |
-| :------------: |
-
- <img src="Screenshots/home.gif" width = "400">
+|                      Home                      |
+| :--------------------------------------------: |
+| <img src="Screenshots/home.gif" width = "800"> |
 
 |                       MyPage                        |                      Search                      |
 | :-------------------------------------------------: | :----------------------------------------------: |
