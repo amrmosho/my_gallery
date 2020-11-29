@@ -16,13 +16,26 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = os.urandom(24)
 app.config['SESSION_TYPE'] = 'filesystem'
 
+# pages
 
-def get_login_data():
+
+@ app.route('/', methods=['GET', 'POST'])
+def index():
     if 'user_login_data' in session:
-        return get_row(
-            "users", "id='" + str(session['user_login_data']) + "'")
+        return user_home()
     else:
-        return ""
+        if request.method == 'POST':
+
+            user_data = login(request.form.get(
+                "password"), request.form.get("email"))
+
+            if not user_data:
+                return render_template("home.html", menu="home", errormsg="login error :(")
+            else:
+                session['user_login_data'] = user_data[0]
+                return redirect("/mypage", code=302)
+
+        return render_template("home.html", menu="home")
 
 
 @ app.route('/<page>', methods=['GET', 'POST'])
@@ -53,27 +66,30 @@ def user_home(page="1"):
         return redirect("/", code=302)
 
 
-@ app.route('/', methods=['GET', 'POST'])
-def index():
+@app.route('/explore/', methods=['GET', 'POST'])
+@app.route('/explore/<page>', methods=['GET', 'POST'])
+def explore(page="1"):
     if 'user_login_data' in session:
-        return user_home()
+        login_user_data = get_login_data()
+        user_id = str(login_user_data["id"])
+
+        limit = 9
+        images_count = get_row("images", "", "count(id) as cid")["cid"]
+        get_from = limit * (int(page) - 1)
+        images = get_images(user_id, f"1=1 limit {get_from},{limit}")
+
+        page = int(page)
+        next = page + 1
+        perv = page - 1
+        count = int(int(images_count)/limit)+1
+        pages = {"next": next, "page": page,
+                 "perv": perv, "count": count}
+
+        return render_template("explore.html", menu="explore", pages=pages, images=images, login_user_data=login_user_data)
     else:
-        if request.method == 'POST':
-            sql = "select * from users where email= :email and password= :password "
-            o = {'password': request.form.get(
-                "password"), 'email': request.form.get("email")}
-            user_data = db.engine.execute(sql, o).first()
-
-            if not user_data:
-                return render_template("home.html", menu="home", errormsg="login error :(")
-            else:
-                session['user_login_data'] = user_data[0]
-                return redirect("/mypage", code=302)
-
-        return render_template("home.html", menu="home")
+        return redirect("/", code=302)
 
 
-# pages
 @app.route('/user/<id>/<page>', methods=['GET', 'POST'])
 @app.route('/user/<id>', methods=['GET', 'POST'])
 def user(id, page="1"):
@@ -96,55 +112,6 @@ def user(id, page="1"):
                  "perv": perv, "count": count}
 
         return render_template("user.html", follow=follow,  menu="user", pages=pages, images=images, user=user_data, login_user_data=login_user_data)
-    else:
-        return redirect("/", code=302)
-
-
-@app.route('/search/<word>/', methods=['GET', 'POST'])
-@app.route('/search/<word>/<page>', methods=['GET', 'POST'])
-def search(word, page="1"):
-    if 'user_login_data' in session:
-        login_user_data = get_login_data()
-        user_id = str(login_user_data["id"])
-
-        limit = 9
-        w = f"( title like '%{word}%'  or des like'%{word}%' )  "
-        images_count = get_row("images", w, "count(id) as cid")["cid"]
-        get_from = limit * (int(page) - 1)
-        images = get_images(user_id, f" {w } limit {get_from},{limit}")
-
-        page = int(page)
-        next = page + 1
-        perv = page - 1
-        count = int(int(images_count)/limit)+1
-        pages = {"next": next, "page": page,  "images_count": images_count,
-                 "perv": perv, "count": count}
-
-        return render_template("search.html", menu="search", search=word,  pages=pages, images=images, login_user_data=login_user_data)
-    else:
-        return redirect("/", code=302)
-
-
-@app.route('/explore/', methods=['GET', 'POST'])
-@app.route('/explore/<page>', methods=['GET', 'POST'])
-def explore(page="1"):
-    if 'user_login_data' in session:
-        login_user_data = get_login_data()
-        user_id = str(login_user_data["id"])
-
-        limit = 9
-        images_count = get_row("images", "", "count(id) as cid")["cid"]
-        get_from = limit * (int(page) - 1)
-        images = get_images(user_id, f"1=1 limit {get_from},{limit}")
-
-        page = int(page)
-        next = page + 1
-        perv = page - 1
-        count = int(int(images_count)/limit)+1
-        pages = {"next": next, "page": page,
-                 "perv": perv, "count": count}
-
-        return render_template("explore.html", menu="explore", pages=pages, images=images, login_user_data=login_user_data)
     else:
         return redirect("/", code=302)
 
@@ -175,20 +142,78 @@ def mypage(page="1"):
         return redirect("/", code=302)
 
 
+@app.route('/search/<word>/', methods=['GET', 'POST'])
+@app.route('/search/<word>/<page>', methods=['GET', 'POST'])
+def search(word, page="1"):
+    if 'user_login_data' in session:
+        login_user_data = get_login_data()
+        user_id = str(login_user_data["id"])
+
+        limit = 9
+        w = f"( title like '%{word}%'  or des like'%{word}%' )  "
+        images_count = get_row("images", w, "count(id) as cid")["cid"]
+        get_from = limit * (int(page) - 1)
+        images = get_images(user_id, f" {w } limit {get_from},{limit}")
+
+        page = int(page)
+        next = page + 1
+        perv = page - 1
+        count = int(int(images_count)/limit)+1
+        pages = {"next": next, "page": page,  "images_count": images_count,
+                 "perv": perv, "count": count}
+
+        return render_template("search.html", menu="search", search=word,  pages=pages, images=images, login_user_data=login_user_data)
+    else:
+        return redirect("/", code=302)
+
+
 @ app.route('/about', methods=['GET', 'POST'])
 def about(page="1"):
     login_user_data = get_login_data()
     return render_template("about.html", menu="about", login_user_data=login_user_data)
+
 
 # pages
 
 
 # user Actions
 
+@ app.route('/signup/', methods=['GET', 'POST'])
+def signup():
+
+    if request.method == 'POST':
+        image = uploadimage("image")
+        banner = uploadimage("banner")
+        name = request.form.get("name")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        sql = f' INSERT INTO users(name,email,password,image,banner) VALUES ("{name}", "{email}","{password}", "{image}" ,"{banner}")'
+        result = db.engine.execute(sql)
+        return redirect("/", code=302)
+    else:
+        return render_template("signup.html")
+
+        # images Actions
+
+
+def login(password, emil):
+    sql = "select * from users where email= :email and password= :password "
+    o = {'password': password, 'email': emil}
+    return db.engine.execute(sql, o).first()
+
+
 @ app.route('/logout')
 def logout():
     session.pop('user_login_data', None)
     return redirect("/mypage", code=302)
+
+
+def get_login_data():
+    if 'user_login_data' in session:
+        return get_row(
+            "users", "id='" + str(session['user_login_data']) + "'")
+    else:
+        return ""
 
 
 @ app.route('/edit_my_data/', methods=['GET', 'POST'])
@@ -215,24 +240,6 @@ def edit_my_data():
         return render_template("profile.html",  user=user_data)
 
 
-@ app.route('/signup/', methods=['GET', 'POST'])
-def signup():
-
-    if request.method == 'POST':
-        image = uploadimage("image")
-        banner = uploadimage("banner")
-        name = request.form.get("name")
-        email = request.form.get("email")
-        password = request.form.get("password")
-        sql = f' INSERT INTO users(name,email,password,image,banner) VALUES ("{name}", "{email}","{password}", "{image}" ,"{banner}")'
-        result = db.engine.execute(sql)
-        return redirect("/", code=302)
-    else:
-        return render_template("signup.html")
-
-        # images Actions
-
-
 @ app.route('/follow/<follow_id>/<user_id>')
 def follow_unfollow(follow_id, user_id):
     w = f"`follower`='{follow_id}' and  `user_id`='{user_id}'"
@@ -254,6 +261,8 @@ def is_follow(user_id, follower_id):
         return "0"
     else:
         return "1"
+
+
 # user Actions
 
 
@@ -294,7 +303,7 @@ def saveimage():
 
 
 @ app.route('/image/<id>')
-def image(id):
+def get_image(id):
     login_user_data = get_login_data()
     user_id = str(login_user_data["id"])
 
@@ -310,13 +319,13 @@ def image(id):
 
 
 @ app.route('/addimage')
-def addimage():
+def add_image():
     user_data = users.query.filter_by(id='1').first_or_404()
     return render_template("add_image.html",  user=user_data)
 
 
 @ app.route('/editimage/<id>')
-def editimage(id):
+def edit_image(id):
     user_data = users.query.filter_by(id='1').first_or_404()
     image = images.query.filter_by(id=id).first_or_404()
     return render_template("add_image.html",  user=user_data, image=image)
@@ -332,7 +341,7 @@ def delete_image(id):
 
 
 @ app.route('/imagelike/<image_id>/<user_id>')
-def add_remove_like(image_id, user_id):
+def add_like_unlike_image(image_id, user_id):
     w = f"`image_id`='{image_id}' and  `user_id`='{user_id}'"
     old_data = get_row("likes", w)
 
@@ -349,5 +358,6 @@ def add_remove_like(image_id, user_id):
         "likes", f" `image_id`='{image_id}'", "count(id) as count ")["count"]
 
     return f' <span onclick = "like_image(this)" data-image_id = "{image_id}" data-user_id = "{user_id}" class = "col-3 img_like_btn     small-info " > <i style = "width:auto ;margin: 0 5px;" class = "far  {color_class}   fa-thumbs-up" > </i > {likes} </span >'
+
 
 # images Actions
