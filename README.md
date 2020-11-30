@@ -1,15 +1,16 @@
 # CS50-Final-Project
 
-This is the Final Project of the CS50 online course series "My gallery" it's photosharing site Allows users to upload photos and share with other.
+This is the Final Project of the CS50 online course series 
+"My gallery" is a photosharing site that allows users to upload photos and share with others.
 
 My Gallery lets users do the following:
 
-- Create account then login in they area from website.
-- Edit his frofile anytime he needs.
-- Upload photos to share with other.
+- Create account and login in to the website.
+- Edit his profile anytime he needs.
+- Upload photos to share with others.
 - Explore other images uploaded from other users.
-- Make like to likes photo.
-- Follow anther users to Follow up the latest photos.
+- Like pictures.
+- Follow other users to Follow their latest photos.
 - Search for specific photos.
 
 |                     Login                     |                       Pages                       |
@@ -34,8 +35,8 @@ My Gallery lets users do the following:
 - css
 - js
 
-I've used Flask web framework based in Python its was necessary flask-sqlalchemy for manage SQL database with sqlite . I created my own class to do basic actions in the database such as get data , insert , update and delete.
-also i did the necessary javascript code at script.js file and css code at css/style.css
+I've used Python based Flask web framework. To deal with the database i have used flask-sqlalchemy to manage SQL database with sqlite . I have created my own class to do basic actions in the database such as get data , insert , update and delete.
+also i did the necessary javascript code (script.js file) and css code (css/style.css)
 
 ## My code is divided into three main sections
 
